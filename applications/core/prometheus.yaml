@@ -1,0 +1,16 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prometheus
+  namespace: prometheus
+spec:
+  project: core
+  source:
+    repoURL: https://prometheus-community.github.io/helm-charts
+    targetRevision: 91.9.0
+    chart: kube-prometheus-stack
+    helm:
+      valueFiles:
+        - prometheus-values.yaml
+
+

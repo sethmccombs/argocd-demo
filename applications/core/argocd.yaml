@@ -6,6 +6,6 @@ metadata:
 spec:
   project: core
   source:
-    repoURL: https://github.com/sethmccombs/argocd-dmeo.git
+    repoURL: https://github.com/sethmccombs/argocd-demo.git
     targetRevision: HEAD
     path: argocd
