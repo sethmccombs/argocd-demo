@@ -1,0 +1,16 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: core
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  # Project description
+  description: Project for core appls (argoCD, etc)
+  sourceRepos:
+    - 'https://github.com/sethmccombs/argocd-demo'
+  destinations:
+    - namespace: argocd
+      server: https://kubernetes.default.svc
+      name: in-cluster
