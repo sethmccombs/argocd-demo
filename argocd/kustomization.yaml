@@ -3,6 +3,10 @@ kind: Kustomization
 metadata:
   name: kustomize
 
+# The vendored upstream install.yaml only sets metadata.namespace on a handful
+# of resources, so pin the namespace here for all namespaced objects.
+namespace: argocd
+
 resources:
   - v3.5.4
   - base

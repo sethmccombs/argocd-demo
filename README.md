@@ -53,9 +53,11 @@ sync from Git (self-managing).
 
 ```bash
 # 1. Install Argo CD + the core AppProject + SSO/RBAC config directly.
-#    (The vendored manifest does not create the namespace, so create it first.)
+#    - The vendored manifest does not create the namespace, so create it first.
+#    - --server-side is required: the applicationsets CRD exceeds the
+#      client-side apply annotation limit (262144 bytes).
 kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
-kubectl apply -k argocd/
+kubectl apply --server-side --force-conflicts -k argocd/
 
 # 2. Create the SSO client secret (do NOT commit this). The login page will
 #    keep working without it, but GitHub login will not until it is set.
