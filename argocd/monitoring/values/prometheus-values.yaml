@@ -21,6 +21,21 @@ prometheus:
 alertmanager:
   enabled: true
 
+# Control-plane component scraping (etcd/scheduler/controller-manager/proxy/
+# coredns) deploys Services into kube-system and does not work on a local
+# single-node Docker Desktop cluster. Disable it so the AppProject does not
+# need access to kube-system.
+kubeEtcd:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubeControllerManager:
+  enabled: false
+kubeProxy:
+  enabled: false
+coreDns:
+  enabled: false
+
 grafana:
   enabled: true
   # The Grafana sidecar loads any ConfigMap labelled `grafana_dashboard`.

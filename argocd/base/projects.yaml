@@ -22,6 +22,9 @@ spec:
     - server: https://kubernetes.default.svc
       namespace: prod
   clusterResourceWhitelist:
+    # Needed by Applications using the CreateNamespace=true sync option.
+    - group: ""
+      kind: Namespace
     - group: apiextensions.k8s.io
       kind: CustomResourceDefinition
     - group: rbac.authorization.k8s.io
