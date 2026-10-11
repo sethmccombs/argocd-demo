@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-rbac-cm
+data:
+  # Anyone who authenticates can at least view.
+  policy.default: role:readonly
+  # GitHub groups arrive as "<org>:<team>"; map them to Argo CD roles.
+  policy.csv: |
+    g, REPLACE_WITH_GITHUB_ORG:platform-admins, role:admin
+    g, REPLACE_WITH_GITHUB_ORG, role:readonly
+  scopes: '[groups, email]'

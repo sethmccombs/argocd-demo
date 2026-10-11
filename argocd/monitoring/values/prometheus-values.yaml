@@ -1,0 +1,38 @@
+# Values for kube-prometheus-stack (chart 91.9.0)
+# Deployed by the `prometheus` Application in namespace `monitoring`.
+
+fullnameOverride: ""
+
+prometheus:
+  prometheusSpec:
+    retention: 6h
+    # Select ServiceMonitors/PrometheusRules from every namespace so the
+    # Argo CD monitors (which carry the `release: prometheus` label) are picked
+    # up without relying on Helm release label conventions.
+    serviceMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorNamespaceSelector: {}
+    ruleSelectorNilUsesHelmValues: false
+    ruleNamespaceSelector: {}
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+
+alertmanager:
+  enabled: true
+
+grafana:
+  enabled: true
+  # The Grafana sidecar loads any ConfigMap labelled `grafana_dashboard`.
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+      labelValue: "1"
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+
+# Keep the demo light: we don't need node-level exporters for this brief, but
+# leaving them on is harmless. Disable kube-state-metrics churn if desired.

@@ -6,11 +6,31 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  # Project description
-  description: Project for core appls (argoCD, etc)
+  description: Core platform apps (Argo CD, monitoring) and demo product environments
   sourceRepos:
-    - 'https://github.com/sethmccombs/argocd-demo'
+    - https://github.com/sethmccombs/argocd-demo.git
+    - https://prometheus-community.github.io/helm-charts
   destinations:
-    - namespace: argocd
-      server: https://kubernetes.default.svc
-      name: in-cluster
+    - server: https://kubernetes.default.svc
+      namespace: argocd
+    - server: https://kubernetes.default.svc
+      namespace: monitoring
+    - server: https://kubernetes.default.svc
+      namespace: dev
+    - server: https://kubernetes.default.svc
+      namespace: staging
+    - server: https://kubernetes.default.svc
+      namespace: prod
+  clusterResourceWhitelist:
+    - group: apiextensions.k8s.io
+      kind: CustomResourceDefinition
+    - group: rbac.authorization.k8s.io
+      kind: ClusterRole
+    - group: rbac.authorization.k8s.io
+      kind: ClusterRoleBinding
+    - group: admissionregistration.k8s.io
+      kind: ValidatingWebhookConfiguration
+    - group: admissionregistration.k8s.io
+      kind: MutatingWebhookConfiguration
+    - group: apiregistration.k8s.io
+      kind: APIService

@@ -1,0 +1,54 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: argocd-alerts
+  labels:
+    release: prometheus
+    app.kubernetes.io/part-of: argocd
+spec:
+  groups:
+    - name: argocd.rules
+      rules:
+        - alert: ArgoCDAppOutOfSync
+          expr: argocd_app_info{sync_status="OutOfSync"} == 1
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Argo CD application {{ $labels.name }} is OutOfSync"
+            description: >-
+              Application {{ $labels.name }} (namespace {{ $labels.namespace }},
+              project {{ $labels.project }}) has been OutOfSync for 15 minutes.
+
+        - alert: ArgoCDAppUnhealthy
+          expr: argocd_app_info{health_status=~"Degraded|Missing|Unknown"} == 1
+          for: 15m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Argo CD application {{ $labels.name }} is {{ $labels.health_status }}"
+            description: >-
+              Application {{ $labels.name }} (namespace {{ $labels.namespace }})
+              reports health {{ $labels.health_status }} for 15 minutes.
+
+        - alert: ArgoCDComponentDown
+          expr: up{job=~"argocd.*"} == 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Argo CD component {{ $labels.job }} is not scrapeable"
+            description: >-
+              Prometheus cannot scrape {{ $labels.job }} ({{ $labels.instance }})
+              for 5 minutes; the Argo CD component may be down.
+
+        - alert: ArgoCDAppSyncFailed
+          expr: increase(argocd_app_sync_total{phase="Error"}[10m]) > 0
+          for: 0m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Argo CD sync errors for {{ $labels.name }}"
+            description: >-
+              Application {{ $labels.name }} recorded sync errors in the last
+              10 minutes.

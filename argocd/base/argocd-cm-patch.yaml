@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+data:
+  # External URL clients should use. For a local kind/minikube demo we
+  # port-forward and browse via localhost.
+  url: https://localhost:8080
+
+  # Ask Dex to surface group membership so RBAC can map GitHub teams.
+  dex.config: |
+    connectors:
+      - type: github
+        id: github
+        name: GitHub
+        config:
+          # Client ID from the GitHub OAuth App. The matching client secret
+          # lives out-of-band in the argocd-secret Secret under the key
+          # `dex.github.clientSecret` and is referenced here.
+          clientID: REPLACE_WITH_GITHUB_CLIENT_ID
+          clientSecret: $dex.github.clientSecret
+          # Only members of these GitHub orgs may authenticate.
+          orgs:
+            - name: REPLACE_WITH_GITHUB_ORG
+          # Load team membership as groups (requires org membership).
+          loadAllGroups: false

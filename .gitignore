@@ -1,0 +1,9 @@
+# IDE
+.idea/
+*.iml
+
+# Local overrides / secrets (never commit these)
+*.local.yaml
+*.local.yml
+secrets/
+.env
