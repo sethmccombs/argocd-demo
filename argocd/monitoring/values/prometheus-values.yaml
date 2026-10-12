@@ -11,6 +11,11 @@ prometheusOperator:
     enabled: false
     patch:
       enabled: false
+  # With the admission webhooks disabled there is no cert-generation hook to
+  # produce the operator's TLS serving secret, yet the operator still mounts it
+  # and fails to start. Disable the operator's TLS web server instead.
+  tls:
+    enabled: false
   # Relax the aggressive 1s probe timeouts so a slow/constrained node does not
   # crash-loop the operator via liveness/readiness failures.
   livenessProbe:
