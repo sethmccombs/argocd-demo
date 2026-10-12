@@ -12,7 +12,7 @@ following components interact and be prepared to discuss. Note that argocd-serve
 
 
 ![argocd-diagram](img/argocd-daigram.png)
-1. The git server (github, etc) receives an update to a watched repo
+1. The git server (github, etc) receives an update to a repo that ArgoCD is watching
 2. if configured, the git server fires off to `/api/webhook`, or ArgoCD polls for repo changes every few minutes 
 3. `argocd-server` sets the refresh annotation on the relevant application(s) - [docs](https://argo-cd.readthedocs.io/en/latest/operator-manual/webhook/#application-annotations-used-by-webhooks)
 4. `application-controller` watches the `application` custom resources, detects the annotation and requests latest manifests for new git revision
