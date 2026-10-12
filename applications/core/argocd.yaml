@@ -23,3 +23,12 @@ spec:
     syncOptions:
       - CreateNamespace=false
       - ServerSideApply=true
+  # Ignore differences in the argocd-secret's data so the injected Dex client
+  # secret and Argo CD's auto-generated admin/redis entries survive each sync.
+  ignoreDifferences:
+    - group: ""
+      kind: Secret
+      name: argocd-secret
+      namespace: argocd
+      jsonPointers:
+        - /data

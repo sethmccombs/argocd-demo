@@ -17,10 +17,10 @@ data:
           # Client ID from the GitHub OAuth App. The matching client secret
           # lives out-of-band in the argocd-secret Secret under the key
           # `dex.github.clientSecret` and is referenced here.
-          clientID: REPLACE_WITH_GITHUB_CLIENT_ID
+          clientID: Ov23liG9JJZkcwACuqg1
           clientSecret: $dex.github.clientSecret
           # Only members of these GitHub orgs may authenticate.
           orgs:
-            - name: REPLACE_WITH_GITHUB_ORG
+            - name: slip-angle
           # Load team membership as groups (requires org membership).
           loadAllGroups: false

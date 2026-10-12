@@ -49,8 +49,11 @@ helm template kps prometheus-community/kube-prometheus-stack \
 ## Secrets / SSO
 - Never commit secrets or credentials. The Dex GitHub clientSecret is injected
   out-of-band into the `argocd-secret` Secret (key `dex.github.clientSecret`).
-- `argocd/base/argocd-cm-patch.yaml` holds `REPLACE_WITH_GITHUB_CLIENT_ID` and
-  org placeholders; fill these in for real GitHub login.
+- SSO uses the Dex GitHub connector: `argocd/base/argocd-cm-patch.yaml` holds the
+  OAuth client ID (`Ov23liG9JJZkcwACuqg1`) and org (`slip-angle`); members are
+  granted `role:admin` org-wide via `argocd/base/argocd-rbac-cm-patch.yaml`. The
+  callback is `https://localhost:8080/api/dex/callback` (browse via
+  `port-forward svc/argocd-server 8080:443`).
 - `.idea/`, `secrets/`, `.env`, and `*.local.yaml` are gitignored.
 
 ## Bootstrap (fresh cluster)
