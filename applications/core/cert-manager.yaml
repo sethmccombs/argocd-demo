@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: core
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cert-manager
+  # cert-manager is a prerequisite for Kargo's webhooks/certificates and is
+  # GitOps-managed here so infrastructure is installed the same way as the app.
+  source:
+    repoURL: https://charts.jetstack.io
+    chart: cert-manager
+    targetRevision: v1.21.2
+    helm:
+      values: |
+        installCRDs: true
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
