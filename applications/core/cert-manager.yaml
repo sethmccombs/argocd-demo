@@ -19,6 +19,11 @@ spec:
     helm:
       values: |
         installCRDs: true
+        # Default leader-election roles are created in kube-system; point them at
+        # the cert-manager namespace so the AppProject does not need that scope.
+        global:
+          leaderElection:
+            namespace: cert-manager
   syncPolicy:
     automated:
       prune: true
