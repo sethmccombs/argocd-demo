@@ -8,8 +8,9 @@ repository (GitOps "app of apps"), with:
 - **Monitoring** – Prometheus Operator (`kube-prometheus-stack`) with
   `ServiceMonitor`s, Grafana dashboards, and alert rules for Argo CD.
 - **SSO** – GitHub login via the bundled Dex `github` connector.
-- **Multi-region delivery** – an `ApplicationSet` that fans a single demo
-  application out across `east` and `west` (simulated regions).
+- **Kargo delivery** – application promotion to `dev`/`east`/`west` is owned by
+  Kargo; see the sibling [kargo-demo](https://github.com/sethmccombs/kargo-demo)
+  repo, which uses an Argo CD `ApplicationSet` for the demo application.
 
 Target environment: a single-cluster (kind / minikube) demo install.
 
@@ -23,25 +24,23 @@ argocd-demo/
 │   └── monitoring/                 # Prometheus values, ServiceMonitors, dashboards, alerts
 ├── applications/                   # app-of-apps tree
 │   ├── root.yaml                   # root Application -> applications/
-│   ├── core/                       # argocd + prometheus + argocd-monitoring Applications
-│   └── product/                    # ApplicationSet for east/west regions
-├── examples/product/               # the demo workload (base + env overlays)
+│   └── core/                       # argocd + cert-manager + prometheus + argocd-monitoring
 └── argocdmanifest.sh               # helper to (re-)vendor an Argo CD release
 ```
 
 ### How it fits together
 
 1. `applications/root.yaml` (app of apps) points at `applications/` and owns the
-   `argocd`, `prometheus`, `argocd-monitoring`, and product `ApplicationSet`
-   resources.
+   `argocd`, `cert-manager`, `prometheus`, and `argocd-monitoring` resources.
 2. The `argocd` Application points back at `argocd/`, so Argo CD installs and
    maintains **itself**.
 3. The `prometheus` Application installs `kube-prometheus-stack` into the
    `monitoring` namespace. Its Argo CD `ServiceMonitor`s, Grafana dashboard, and
    alerts live in the separate `argocd-monitoring` Application so they never
    wait on Grafana health.
-4. The product `ApplicationSet` renders one Application per region from the
-   `examples/product/overlays/*` directories.
+4. `cert-manager` is GitOps-managed here (a Kargo prerequisite); the `product`
+   application's lifecycle and its `dev`/`east`/`west` `ApplicationSet` are owned
+   by Kargo in the `kargo-demo` repository.
 
 ## Prerequisites
 
@@ -75,8 +74,9 @@ kubectl apply -f applications/root.yaml
 kubectl -n argocd get applications
 ```
 
-`root` then creates and owns `argocd`, `prometheus`, and the product
-`ApplicationSet`; the `argocd` Application adopts the install from step 1.
+`root` then creates and owns `argocd`, `cert-manager`, `prometheus`, and
+`argocd-monitoring`; the `argocd` Application adopts the install from step 1.
+Product delivery is owned by Kargo (see `kargo-demo`).
 
 ## Access
 
@@ -131,6 +131,7 @@ and `PrometheusRule` alerts are deployed by the `argocd-monitoring` Application.
   `UP`; the Argo CD Grafana dashboard renders; alerts appear under Alerts.
 - **SSO:** the Argo CD login page shows a "Log in via GitHub" button and the
   flow authenticates against GitHub.
-- **ApplicationSet:** `kubectl -n argocd get applications` lists
-  `product-east`, `product-west`, each carrying its region's
-  `topology.kubernetes.io/region` label.
+- **Kargo delivery (sibling repo):** `kubectl -n argocd get applications` lists
+  `kargo-product-dev`, `kargo-product-east`, `kargo-product-west` (created by the
+  `kargo-product` ApplicationSet) which Kargo promotes through the pipeline in
+  `kargo-demo`.
