@@ -25,6 +25,7 @@ argocd-demo/
 ├── applications/                   # app-of-apps tree
 │   ├── root.yaml                   # root Application -> applications/
 │   └── core/                       # argocd + cert-manager + prometheus + argocd-monitoring
+├── img/                            # excalidraw diagram for docs
 └── argocdmanifest.sh               # helper to (re-)vendor an Argo CD release
 ```
 
