@@ -8,8 +8,8 @@ repository (GitOps "app of apps"), with:
 - **Monitoring** – Prometheus Operator (`kube-prometheus-stack`) with
   `ServiceMonitor`s, Grafana dashboards, and alert rules for Argo CD.
 - **SSO** – GitHub login via the bundled Dex `github` connector.
-- **Multi-environment delivery** – an `ApplicationSet` that fans a single demo
-  application out across `dev`, `staging`, and `prod`.
+- **Multi-region delivery** – an `ApplicationSet` that fans a single demo
+  application out across `east` and `west` (simulated regions).
 
 Target environment: a single-cluster (kind / minikube) demo install.
 
@@ -24,7 +24,7 @@ argocd-demo/
 ├── applications/                   # app-of-apps tree
 │   ├── root.yaml                   # root Application -> applications/
 │   ├── core/                       # argocd + prometheus + argocd-monitoring Applications
-│   └── product/                    # ApplicationSet for dev/staging/prod
+│   └── product/                    # ApplicationSet for east/west regions
 ├── examples/product/               # the demo workload (base + env overlays)
 └── argocdmanifest.sh               # helper to (re-)vendor an Argo CD release
 ```
@@ -40,7 +40,7 @@ argocd-demo/
    `monitoring` namespace. Its Argo CD `ServiceMonitor`s, Grafana dashboard, and
    alerts live in the separate `argocd-monitoring` Application so they never
    wait on Grafana health.
-4. The product `ApplicationSet` renders one Application per environment from the
+4. The product `ApplicationSet` renders one Application per region from the
    `examples/product/overlays/*` directories.
 
 ## Prerequisites
@@ -132,4 +132,5 @@ and `PrometheusRule` alerts are deployed by the `argocd-monitoring` Application.
 - **SSO:** the Argo CD login page shows a "Log in via GitHub" button and the
   flow authenticates against GitHub.
 - **ApplicationSet:** `kubectl -n argocd get applications` lists
-  `product-dev`, `product-staging`, `product-prod`.
+  `product-east`, `product-west`, each carrying its region's
+  `topology.kubernetes.io/region` label.

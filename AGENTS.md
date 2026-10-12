@@ -2,7 +2,7 @@
 
 ## Repository
 Self-managing Argo CD environment (GitOps "app of apps") with Prometheus
-monitoring, GitHub SSO (Dex), and an ApplicationSet for dev/staging/prod.
+monitoring, GitHub SSO (Dex), and an ApplicationSet for east/west regions.
 Part of an Akuitiy take-home; `kargo-demo` is a sibling repo for Kargo (later).
 Target: single-cluster local demo (Docker Desktop / kind).
 
@@ -26,7 +26,7 @@ helm template kps prometheus-community/kube-prometheus-stack \
                       SSO/rbac patches) + `monitoring` (Helm values, Argo CD
                       ServiceMonitors, Grafana dashboard, PrometheusRule).
 - `applications/`     App-of-apps: `root` -> `core` (argocd, prometheus,
-                      argocd-monitoring) + `product` (ApplicationSet dev/staging/prod).
+                      argocd-monitoring) + `product` (ApplicationSet east/west).
 - `examples/product/` Demo workload: base manifest + overlays per environment.
 - `argocdmanifest.sh` Re-vendor the Argo CD install manifest. Always pin a
                       version; never use `stable`.
