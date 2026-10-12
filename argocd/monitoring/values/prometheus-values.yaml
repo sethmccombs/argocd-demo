@@ -11,6 +11,16 @@ prometheusOperator:
     enabled: false
     patch:
       enabled: false
+  # Relax the aggressive 1s probe timeouts so a slow/constrained node does not
+  # crash-loop the operator via liveness/readiness failures.
+  livenessProbe:
+    enabled: true
+    timeoutSeconds: 5
+    failureThreshold: 5
+  readinessProbe:
+    enabled: true
+    timeoutSeconds: 5
+    failureThreshold: 5
 
 prometheus:
   prometheusSpec:
@@ -27,8 +37,15 @@ prometheus:
         cpu: 100m
         memory: 256Mi
 
+# Optional components trimmed for a lean local demo; the stack is core
+# Prometheus + operator + Grafana focused on Argo CD.
 alertmanager:
-  enabled: true
+  enabled: false
+# Legacy enable-condition keys for the bundled sub-charts.
+nodeExporter:
+  enabled: false
+kubeStateMetrics:
+  enabled: false
 
 # Control-plane component scraping (etcd/scheduler/controller-manager/proxy/
 # coredns) deploys Services into kube-system and does not work on a local
@@ -47,16 +64,22 @@ coreDns:
 
 grafana:
   enabled: true
+  # Only the Argo CD dashboard we ship; skip ~25 stock dashboards to keep the
+  # Grafana SQLite backend light on startup.
+  defaultDashboardsEnabled: false
   # The Grafana sidecar loads any ConfigMap labelled `grafana_dashboard`.
   sidecar:
     dashboards:
       enabled: true
       label: grafana_dashboard
       labelValue: "1"
+  livenessProbe:
+    timeoutSeconds: 5
+    failureThreshold: 5
+  readinessProbe:
+    timeoutSeconds: 5
+    failureThreshold: 5
   resources:
     requests:
       cpu: 50m
       memory: 128Mi
-
-# Keep the demo light: we don't need node-level exporters for this brief, but
-# leaving them on is harmless. Disable kube-state-metrics churn if desired.

@@ -9,8 +9,3 @@ resources:
   - servicemonitors.yaml
   - dashboards-configmap.yaml
   - prometheusrule.yaml
-
-# Applied one wave after the Helm chart so the monitoring.coreos.com CRDs
-# installed by kube-prometheus-stack exist before these custom resources.
-commonAnnotations:
-  argocd.argoproj.io/sync-wave: "1"

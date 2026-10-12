@@ -10,8 +10,9 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
-  # Multi-source: the Helm chart, a values-file reference into this repo, and
-  # the Argo CD monitoring config (ServiceMonitors, dashboards, alerts).
+  # Multi-source: the Helm chart plus a values-file reference into this repo.
+  # The Argo CD monitoring config (ServiceMonitors, dashboards, alerts) lives in
+  # the separate `argocd-monitoring` Application so it never waits on Grafana.
   sources:
     - repoURL: https://prometheus-community.github.io/helm-charts
       chart: kube-prometheus-stack
@@ -22,9 +23,6 @@ spec:
     - repoURL: https://github.com/sethmccombs/argocd-demo.git
       targetRevision: HEAD
       ref: values
-    - repoURL: https://github.com/sethmccombs/argocd-demo.git
-      targetRevision: HEAD
-      path: argocd/monitoring
   syncPolicy:
     automated:
       prune: true
