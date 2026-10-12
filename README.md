@@ -23,7 +23,7 @@ argocd-demo/
 │   └── monitoring/                 # Prometheus values, ServiceMonitors, dashboards, alerts
 ├── applications/                   # app-of-apps tree
 │   ├── root.yaml                   # root Application -> applications/
-│   ├── core/                       # argocd + prometheus Applications
+│   ├── core/                       # argocd + prometheus + argocd-monitoring Applications
 │   └── product/                    # ApplicationSet for dev/staging/prod
 ├── examples/product/               # the demo workload (base + env overlays)
 └── argocdmanifest.sh               # helper to (re-)vendor an Argo CD release
@@ -32,11 +32,14 @@ argocd-demo/
 ### How it fits together
 
 1. `applications/root.yaml` (app of apps) points at `applications/` and owns the
-   `argocd`, `prometheus`, and product `ApplicationSet` resources.
+   `argocd`, `prometheus`, `argocd-monitoring`, and product `ApplicationSet`
+   resources.
 2. The `argocd` Application points back at `argocd/`, so Argo CD installs and
    maintains **itself**.
 3. The `prometheus` Application installs `kube-prometheus-stack` into the
-   `monitoring` namespace and scrapes Argo CD's metrics endpoints.
+   `monitoring` namespace. Its Argo CD `ServiceMonitor`s, Grafana dashboard, and
+   alerts live in the separate `argocd-monitoring` Application so they never
+   wait on Grafana health.
 4. The product `ApplicationSet` renders one Application per environment from the
    `examples/product/overlays/*` directories.
 
@@ -114,6 +117,11 @@ alongside. Access Grafana:
 ```bash
 kubectl -n monitoring port-forward svc/prometheus-grafana 3000:80
 ```
+
+This demo trims the stack for a smaller cluster: the stock Grafana dashboards,
+Alertmanager, node-exporter, and kube-state-metrics are disabled, and only the
+Argo CD dashboard it ships is loaded. The Argo CD `ServiceMonitor`s, dashboard,
+and `PrometheusRule` alerts are deployed by the `argocd-monitoring` Application.
 
 ## Verifying the brief
 

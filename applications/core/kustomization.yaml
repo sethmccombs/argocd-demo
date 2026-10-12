@@ -6,3 +6,4 @@ metadata:
 resources:
   - ./argocd.yaml
   - ./prometheus.yaml
+  - ./argocd-monitoring.yaml

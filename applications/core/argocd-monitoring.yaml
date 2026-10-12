@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd-monitoring
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: core
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  # Argo CD observability config (ServiceMonitors, Grafana dashboard, alerts) is
+  # kept as a separate Application so it does not sit behind the Helm chart's
+  # Grafana health gate. It converges once the monitoring.coreos.com CRDs exist.
+  source:
+    repoURL: https://github.com/sethmccombs/argocd-demo.git
+    targetRevision: HEAD
+    path: argocd/monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    retry:
+      limit: 15
+      backoff:
+        duration: 10s
+        factor: 2
+        maxDuration: 5m
+    syncOptions:
+      - CreateNamespace=false
+      - ServerSideApply=true
