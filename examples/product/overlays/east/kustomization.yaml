@@ -3,7 +3,7 @@ kind: Kustomization
 metadata:
   name: kustomize
 
-namespace: dev
+namespace: east
 
 resources:
   - ../../base
@@ -12,7 +12,7 @@ patches:
   - target:
       kind: Deployment
       name: product
-    patch: |
-      - op: replace
-        path: /spec/replicas
-        value: 1
+    patch: |-
+      - op: add
+        path: /spec/template/metadata/labels/topology.kubernetes.io~1region
+        value: east

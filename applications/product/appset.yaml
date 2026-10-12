@@ -4,16 +4,14 @@ metadata:
   name: product
   namespace: argocd
 spec:
-  # Manage one Application per environment for the single in-repo demo app.
+  # Manage one Application per region for the single in-repo demo app.
   generators:
     - list:
         elements:
-          - env: dev
-            namespace: dev
-          - env: staging
-            namespace: staging
-          - env: prod
-            namespace: prod
+          - env: east
+            namespace: east
+          - env: west
+            namespace: west
   template:
     metadata:
       name: 'product-{{env}}'

@@ -16,11 +16,9 @@ spec:
     - server: https://kubernetes.default.svc
       namespace: monitoring
     - server: https://kubernetes.default.svc
-      namespace: dev
+      namespace: east
     - server: https://kubernetes.default.svc
-      namespace: staging
-    - server: https://kubernetes.default.svc
-      namespace: prod
+      namespace: west
   clusterResourceWhitelist:
     # Needed by Applications using the CreateNamespace=true sync option.
     - group: ""
