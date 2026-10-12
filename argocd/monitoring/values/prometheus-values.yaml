@@ -3,6 +3,15 @@
 
 fullnameOverride: ""
 
+prometheusOperator:
+  # The operator's admission webhooks rely on Helm cert-generation hooks that
+  # do not reconcile cleanly under Argo CD (the Sync hangs on the hook
+  # resources). Not needed for this demo.
+  admissionWebhooks:
+    enabled: false
+    patch:
+      enabled: false
+
 prometheus:
   prometheusSpec:
     retention: 6h
