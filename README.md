@@ -81,26 +81,43 @@ Product delivery is owned by Kargo (see `kargo-demo`).
 
 ## Access
 
-```bash
-# Retrieve the initial admin password (used only for the first login).
-kubectl -n argocd get secret argocd-initial-admin-secret \
-  -o jsonpath='{.data.password}' | base64 -d; echo
+The cluster runs on `bazzite` (KIND). Services are published on the tailnet
+with `tailscale serve`:
 
-# Port-forward the UI/API.
-kubectl -n argocd port-forward svc/argocd-server 8080:443
+| Service   | Tailnet URL                                 | Backend (bazzite)          |
+|-----------|---------------------------------------------|----------------------------|
+| Argo CD   | `https://bazzite.tailc1546e.ts.net`         | `https+insecure://localhost:30443` |
+| Kargo     | `https://bazzite.tailc1546e.ts.net:8443`    | `http://localhost:31443`   |
+| Grafana   | `https://bazzite.tailc1546e.ts.net:9443`    | `http://localhost:32443`   |
+
+```bash
+tailscale serve --bg --https=443 https+insecure://localhost:30443
+tailscale serve --bg --https=8443 http://localhost:31443
+tailscale serve --bg --https=9443 http://localhost:32443
 ```
 
-Open <https://localhost:8080>.
+Retrieve the initial admin password (used only for the first login):
+
+```bash
+kubectl -n argocd get secret argocd-initial-admin-secret \
+  -o jsonpath='{.data.password}' | base64 -d; echo
+```
+
+The KIND cluster is created from `argocd-kind.yaml`, which fixes the API port
+at 6443 and maps the three NodePorts to the host.
 
 ## GitHub SSO setup
 
 1. Create a GitHub **OAuth App** (Settings → Developer settings → OAuth Apps):
-   - **Homepage URL:** `https://localhost:8080`
-   - **Authorization callback URL:** `https://localhost:8080/api/dex/callback`
-2. Put the client ID in `argocd/base/argocd-cm.yaml` (`dex.config`).
+   - **Homepage URL:** `https://bazzite.tailc1546e.ts.net`
+   - **Authorization callback URL:** `https://bazzite.tailc1546e.ts.net/api/dex/callback`
+2. The client ID is in `argocd/base/argocd-cm-patch.yaml` (`dex.config`).
 3. Store the client secret out of band (see bootstrap step 1) as
    `dex.github.clientSecret` on the `argocd-secret` Secret.
-4. Map GitHub orgs/teams to Argo CD roles in `argocd/base/argocd-rbac-cm.yaml`.
+4. Map GitHub orgs/teams to Argo CD roles in `argocd/base/argocd-rbac-cm-patch.yaml`.
+5. Dex also serves a static `kargo` OIDC client (`staticClients` in
+   `argocd/base/argocd-cm-patch.yaml`) that Kargo uses for SSO. Its redirect
+   URI is `https://bazzite.tailc1546e.ts.net:8443/login`.
 
 ## Monitoring
 

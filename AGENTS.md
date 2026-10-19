@@ -52,8 +52,9 @@ helm template kps prometheus-community/kube-prometheus-stack \
 - SSO uses the Dex GitHub connector: `argocd/base/argocd-cm-patch.yaml` holds the
   OAuth client ID (`Ov23liG9JJZkcwACuqg1`) and org (`slip-angle`); members are
   granted `role:admin` org-wide via `argocd/base/argocd-rbac-cm-patch.yaml`. The
-  callback is `https://localhost:8080/api/dex/callback` (browse via
-  `port-forward svc/argocd-server 8080:443`).
+  callback is `https://bazzite.tailc1546e.ts.net/api/dex/callback` (tailnet, via
+  `tailscale serve`). Argo CD `url` must match this host.
+- Kargo OIDC uses the Dex `kargo` static client (in `argocd-cm-patch.yaml`).
 - `.idea/`, `secrets/`, `.env`, and `*.local.yaml` are gitignored.
 
 ## Bootstrap (fresh cluster)
