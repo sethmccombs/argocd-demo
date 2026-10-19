@@ -103,7 +103,7 @@ kubectl -n argocd get secret argocd-initial-admin-secret \
   -o jsonpath='{.data.password}' | base64 -d; echo
 ```
 
-The KIND cluster is created from `argocd-kind.yaml`, which fixes the API port
+The KIND cluster is created from `infra/argocd-kind.yaml`, which fixes the API port
 at 6443 and maps the three NodePorts to the host.
 
 ## GitHub SSO setup
