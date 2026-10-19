@@ -24,3 +24,16 @@ patches:
     target:
       kind: Service
       name: argocd-server
+  # argocd-secret holds the out-of-band Dex GitHub client secret, so it must
+  # not be managed by this Application (its sync was stripping the key).
+  # Bootstrap creates it per argocd-demo/README.md. prune is off on the
+  # argocd Application, so removing it from git does not delete the live object.
+  - target:
+      kind: Secret
+      name: argocd-secret
+    patch: |-
+      $patch: delete
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: argocd-secret
