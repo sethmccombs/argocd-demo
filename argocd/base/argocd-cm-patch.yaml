@@ -8,6 +8,19 @@ data:
   # OAuth App homepage and the Dex callback below.
   url: https://bazzite.tailc1546e.ts.net
 
+  # argocd-secret is created out of band (README bootstrap) and holds the Dex
+  # GitHub client secret. Exclude it from Argo CD's tracking so it does not
+  # show as an extra, OutOfSync resource on the argocd Application.
+  resource.exclusions: |
+    - apiGroups:
+        - ""
+      kinds:
+        - Secret
+      clusters:
+        - "*"
+      names:
+        - argocd-secret
+
   # Dex (bundled with Argo CD) is the OIDC issuer for Kargo, and GitHub is the
   # only upstream identity.
   dex.config: |
