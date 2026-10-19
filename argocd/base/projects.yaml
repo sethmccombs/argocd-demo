@@ -11,6 +11,7 @@ spec:
     - https://github.com/sethmccombs/argocd-demo.git
     - https://prometheus-community.github.io/helm-charts
     - https://charts.jetstack.io
+    - ghcr.io/akuity/kargo-charts
   destinations:
     - server: https://kubernetes.default.svc
       namespace: argocd
@@ -18,6 +19,8 @@ spec:
       namespace: cert-manager
     - server: https://kubernetes.default.svc
       namespace: monitoring
+    - server: https://kubernetes.default.svc
+      namespace: kargo-system
   clusterResourceWhitelist:
     # Needed by Applications using the CreateNamespace=true sync option.
     - group: ""

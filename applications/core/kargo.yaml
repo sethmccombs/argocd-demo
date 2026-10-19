@@ -1,0 +1,44 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kargo
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: core
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kargo-system
+  # Kargo is GitOps-managed here. The admin password hash and token signing key
+  # are NOT in Git: they come from the `kargo-api-admin` Secret in kargo-system
+  # (keys ADMIN_ACCOUNT_PASSWORD_HASH and ADMIN_ACCOUNT_TOKEN_SIGNING_KEY),
+  # referenced via api.secret.name below.
+  source:
+    repoURL: ghcr.io/akuity/kargo-charts
+    chart: kargo
+    targetRevision: 1.12.4
+    helm:
+      releaseName: kargo
+      values: |
+        api:
+          # Public host (tailnet) including the port. Used for OIDC redirect URLs.
+          host: bazzite.tailc1546e.ts.net:8443
+          secret:
+            name: kargo-api-admin
+          service:
+            type: NodePort
+            nodePort: 31443
+          oidc:
+            enabled: true
+            # Argo CD's bundled Dex. Served on 443; the Kargo pod must resolve it.
+            issuerURL: https://bazzite.tailc1546e.ts.net/api/dex
+            # Static client defined in argocd/base/argocd-cm-patch.yaml.
+            clientID: kargo
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

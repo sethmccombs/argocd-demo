@@ -8,3 +8,4 @@ resources:
   - ./cert-manager.yaml
   - ./prometheus.yaml
   - ./argocd-monitoring.yaml
+  - ./kargo.yaml
