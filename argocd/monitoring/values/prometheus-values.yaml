@@ -69,6 +69,11 @@ coreDns:
 
 grafana:
   enabled: true
+  # Exposed on the desktop's NodePort 32443 (KIND extraPortMappings), then
+  # published on the tailnet with `tailscale serve` on port 9443.
+  service:
+    type: NodePort
+    nodePort: 32443
   # Only the Argo CD dashboard we ship; skip ~25 stock dashboards to keep the
   # Grafana SQLite backend light on startup.
   defaultDashboardsEnabled: false
