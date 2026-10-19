@@ -21,6 +21,10 @@ spec:
       namespace: monitoring
     - server: https://kubernetes.default.svc
       namespace: kargo-system
+    - server: https://kubernetes.default.svc
+      namespace: kargo-shared-resources
+    - server: https://kubernetes.default.svc
+      namespace: kargo-system-resources
   clusterResourceWhitelist:
     # Needed by Applications using the CreateNamespace=true sync option.
     - group: ""
