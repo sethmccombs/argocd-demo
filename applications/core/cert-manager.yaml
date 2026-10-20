@@ -16,8 +16,6 @@ spec:
     repoURL: https://charts.jetstack.io
     chart: cert-manager
     targetRevision: v1.21.2
-    # values defaults - https://github.com/cert-manager/cert-manager/blob/master/deploy/charts/cert-manager/values.yaml
-    # https://artifacthub.io/packages/helm/cert-manager/cert-manager?modal=values-schema
     helm:
       values: |
         installCRDs: true
@@ -26,9 +24,6 @@ spec:
         global:
           leaderElection:
             namespace: cert-manager
-        crds:
-          annotations:
-            argocd.argoproj.io/sync-wave: "-1"
   syncPolicy:
     automated:
       prune: true
