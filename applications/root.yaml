@@ -8,7 +8,7 @@ metadata:
 spec:
   # Uses the built-in `default` project so it can be created before the `core`
   # AppProject exists (avoids a bootstrap chicken-and-egg).
-  project: default
+  project: core
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
