@@ -8,7 +8,7 @@ metadata:
 namespace: argocd
 
 resources:
-  - v3.5.4
+  - v3.5.5
   - base
 
 patches:
