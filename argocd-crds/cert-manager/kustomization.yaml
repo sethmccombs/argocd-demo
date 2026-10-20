@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: cert-manager-crds
+
+# Vendored from the cert-manager v1.21.2 release asset cert-manager.crds.yaml.
+# Re-vendor with the matching chart version when cert-manager is upgraded.
+resources:
+  - cert-manager.crds.yaml
+
+# Sync before the cert-manager chart (wave 0) so its custom resources have
+# their CRDs available.
+patches:
+  - target:
+      kind: CustomResourceDefinition
+    patch: |-
+      - op: add
+        path: /metadata/annotations
+        value: {}
+      - op: add
+        path: /metadata/annotations/argocd.argoproj.io~1sync-wave
+        value: "-1"

@@ -10,6 +10,8 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: cert-manager
+  # Annotation on this Application: sync-wave 0 (default). The CRDs are in the
+  # cert-manager-crds Application at wave -1.
   # cert-manager is a prerequisite for Kargo's webhooks/certificates and is
   # GitOps-managed here so infrastructure is installed the same way as the app.
   source:
@@ -20,7 +22,10 @@ spec:
     # https://artifacthub.io/packages/helm/cert-manager/cert-manager?modal=values-schema
     helm:
       values: |
-        installCRDs: true
+        # CRDs come from the cert-manager-crds Application (sync-wave -1).
+        crds:
+          enabled: false
+          keep: true
         # Default leader-election roles are created in kube-system; point them at
         # the cert-manager namespace so the AppProject does not need that scope.
         global:
