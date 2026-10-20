@@ -59,6 +59,7 @@ spec:
   sourceRepos:
     - https://github.com/sethmccombs/argocd-demo.git
     - https://github.com/sethmccombs/kargo-demo.git
+    - https://github.com/sethmccombs/manifests.git
   destinations:
     - server: https://kubernetes.default.svc
       namespace: east
