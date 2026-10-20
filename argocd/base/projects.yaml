@@ -11,6 +11,7 @@ spec:
     - https://github.com/sethmccombs/argocd-demo.git
     - https://prometheus-community.github.io/helm-charts
     - https://charts.jetstack.io
+    - https://argoproj.github.io/argo-helm
     - ghcr.io/akuity/kargo-charts
   destinations:
     - server: https://kubernetes.default.svc
@@ -21,6 +22,8 @@ spec:
       namespace: monitoring
     - server: https://kubernetes.default.svc
       namespace: kargo-system
+    - server: https://kubernetes.default.svc
+      namespace: argo-rollouts
     - server: https://kubernetes.default.svc
       namespace: kargo-shared-resources
     - server: https://kubernetes.default.svc
