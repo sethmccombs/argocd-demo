@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kargo-product-config
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: application
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: product
+  # Kargo Project, Warehouse, PromotionTask, and Stages from kargo-demo/kargo.
+  # helm-values.yaml there is Helm input for the Kargo chart, not a manifest.
+  source:
+    repoURL: https://github.com/sethmccombs/kargo-demo.git
+    targetRevision: main
+    path: kargo
+    directory:
+      exclude: helm-values.yaml
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

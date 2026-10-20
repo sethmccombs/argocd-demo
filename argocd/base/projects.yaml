@@ -68,6 +68,10 @@ spec:
       namespace: dev
     - server: https://kubernetes.default.svc
       namespace: staging
+    - server: https://kubernetes.default.svc
+      namespace: product
+    - server: https://kubernetes.default.svc
+      namespace: argocd
   clusterResourceWhitelist:
     # Needed by Applications using the CreateNamespace=true sync option.
     - group: ""
@@ -84,3 +88,6 @@ spec:
       kind: MutatingWebhookConfiguration
     - group: apiregistration.k8s.io
       kind: APIService
+    # Kargo Project is cluster-scoped.
+    - group: kargo.akuity.io
+      kind: Project
