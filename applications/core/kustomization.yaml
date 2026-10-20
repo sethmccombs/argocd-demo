@@ -9,3 +9,4 @@ resources:
   - ./prometheus.yaml
   - ./argocd-monitoring.yaml
   - ./kargo.yaml
+  - ./argo-rollouts.yaml

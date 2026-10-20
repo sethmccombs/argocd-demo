@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argo-rollouts
+  namespace: argocd
+  annotations:
+    # CRDs (Rollout, AnalysisTemplate, AnalysisRun, ...) must exist before the
+    # Kargo controller checks for them at startup.
+    argocd.argoproj.io/sync-wave: "-1"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: core
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argo-rollouts
+  # Argo Rollouts controller and CRDs. Kargo uses the AnalysisTemplate and
+  # AnalysisRun types from this install for Stage verification.
+  source:
+    repoURL: https://argoproj.github.io/argo-helm
+    chart: argo-rollouts
+    targetRevision: 2.43.8
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
