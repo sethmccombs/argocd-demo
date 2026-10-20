@@ -68,6 +68,13 @@ coreDns:
   enabled: false
 
 grafana:
+
+  grafana.ini:
+    auth.anonymous:
+      enabled: true
+      org_role: Admin
+    auth:
+      disable_login_form: true
   enabled: true
   # Exposed on the desktop's NodePort 32443 (KIND extraPortMappings), then
   # published on the tailnet with `tailscale serve` on port 9443.
