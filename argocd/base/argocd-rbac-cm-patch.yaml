@@ -9,3 +9,4 @@ data:
   policy.csv: |
     g, slip-angle, role:admin
   scopes: '[groups, email]'
+  admin.enabled: "false"
